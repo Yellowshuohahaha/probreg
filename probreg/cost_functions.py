@@ -62,6 +62,25 @@ class RigidCostFunction(CostFunction):
         return f, grad
 
 
+class RigidCostFunctionWithCovariance(CostFunction):
+    def __init__(self, d1=1.0, d2=0.05):
+        self._tf_type = tf.RigidTransformation
+        self._d1 = d1
+        self._d2 = d2
+
+    def to_transformation(self, theta):
+        rot = trans.euler_matrix(theta[3:])[:3, :3]
+        return self._tf_type(rot, theta[:3])
+
+    def initial(self):
+        x0 = np.zeros(6)
+        return x0
+
+    def __call__(self, theta, *args):
+        mu_source, sigma_source, mu_target, sigma_target = args
+        tf_obj = self.to_transformation(theta)
+
+
 class TPSCostFunction(CostFunction):
     def __init__(self, control_pts,
                  alpha=1.0, beta=0.1):

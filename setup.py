@@ -159,6 +159,18 @@ ext_modules = [
         language='c++'
     ),
     Extension(
+        'probreg._ndt',
+        ['probreg/cc/ndt_py.cc', 'probreg/cc/ndt.cc'],
+        include_dirs=[
+            # Path to pybind11 headers
+            get_pybind_include(),
+            get_pybind_include(user=True),
+            find_eigen(['third_party/eigen'])
+        ],
+        extra_link_args=['-lgomp'] if use_omp else [],
+        language='c++'
+    ),
+    Extension(
         'probreg._gmmtree',
         ['probreg/cc/gmmtree_py.cc', 'probreg/cc/gmmtree.cc'],
         include_dirs=[
